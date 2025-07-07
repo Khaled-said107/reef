@@ -1,0 +1,50 @@
+name: reef
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+#i change the sdk from sdk: ^3.7.2 to   sdk: ">=3.5.0 <4.0.0" to work on my flutter version ok!!
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  bloc: ^9.0.0
+  dio: ^5.8.0+1
+  dotted_border: null
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.1.1
+  flutter_launcher_icons: ^0.14.4
+  flutter_rating_bar: ^4.0.1
+  flutter_screenutil: ^5.9.3
+  flutter_svg: ^2.1.0
+  fluttertoast: ^8.2.5
+  gap: ^3.0.1
+  http_parser: null
+  image: ^4.5.4
+  image_cropper: ^9.1.0
+  image_picker: ^1.1.2
+  lottie: ^3.3.1
+  persistent_bottom_nav_bar: ^6.2.1
+  pin_code_fields: ^8.0.1
+  shared_preferences: ^2.5.3
+  smooth_page_indicator: ^1.2.1
+  url_launcher: ^6.1.11
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/fonts/
+  fonts:
+    - family: Tajawal
+      fonts:
+        - asset: assets/fonts/Tajawal-Black.ttf
+        - asset: assets/fonts/Tajawal-Medium.ttf
+        - asset: assets/fonts/Tajawal-Bold.ttf
+        - asset: assets/fonts/Tajawal-Regular.ttf
+        - asset: assets/fonts/Tajawal-Light.ttf

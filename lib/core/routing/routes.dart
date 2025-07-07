@@ -1,0 +1,32 @@
+class Routes {
+  static const String splash = '/';
+  static const String onboarding = '/onboarding';
+  static const String register = '/register';
+  static const String login = '/login';
+  static const String forgetPassword = '/forgetPassword';
+  static const String otp = '/otp';
+  static const String resetPassword = '/resetPassword';
+  static const String confirmPassword = '/confirmPassword';
+  static const String home = '/home';
+  static const String profile = '/profile';
+  static const String categories = '/categories';
+  static const String createPost = '/createPost';
+  static const String myPosts = '/myPosts';
+  static const String navbar = '/navbar';
+  static const String product = '/product';
+  static const String editPost = '/editPost';
+  static const String sendPaymentImgScreen = '/sendPaymentImgScreen';
+  static const String confirmPaymentScreen = '/confirmPaymentScreen';
+  static const String paymentScreen = '/paymentScreen';
+  static const String subCategories = '/subCategories';
+  static const String askEngineerScreen = '/askEngineerScreen';
+  static const String categoryPostScreen = '/categoryPostScreen';
+  static const String detelsMyPost = '/DetalsMyPosts';
+  static const String trucksScreen = '/trucksScreen';
+  static const String engAddPost = '/EngineerAddPost';
+  static const String truckDetailsScreen = '/truckDetailsScreen';
+  static const String addCar = '/addCar';
+
+  static const String getHelp = '/HelpScreen';
+  static const String favProduct = '/FavProduct';
+}
