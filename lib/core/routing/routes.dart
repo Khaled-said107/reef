@@ -26,7 +26,7 @@ class Routes {
   static const String engAddPost = '/EngineerAddPost';
   static const String truckDetailsScreen = '/truckDetailsScreen';
   static const String addCar = '/addCar';
-
+  static const String updateEngPost = '/updateEngPost';
   static const String getHelp = '/HelpScreen';
   static const String favProduct = '/FavProduct';
 }

@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 
-import '../../feature/my_posts/data/Model/MyPost_Model.dart';
-
 class DioHelper {
   static late Dio dio;
 
@@ -97,9 +95,10 @@ class DioHelper {
     required dynamic data,
     Map<String, dynamic>? query,
     String? token,
+    bool isFormData = false,
   }) async {
     dio.options.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
       'Authorization': 'Bearer $token',
     };
 

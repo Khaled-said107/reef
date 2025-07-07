@@ -5,7 +5,14 @@ import 'package:gap/gap.dart';
 import 'package:lottie/lottie.dart';
 import 'package:reef/core/constants/app_colors.dart';
 import 'package:reef/core/helpers/cach_helper.dart';
+import 'package:reef/core/helpers/extensions.dart';
+import 'package:reef/core/routing/routes.dart';
 import 'package:reef/core/widgets/app_text.dart';
+import 'package:reef/feature/askEngineer/ui/screens/update_eng_post_screen.dart';
+import 'package:reef/feature/askEngineer/ui/widgets/Comment_engineer_Widget.dart';
+import 'package:reef/feature/askEngineer/ui/widgets/image_view.dart';
+import 'package:reef/feature/askEngineer/ui/widgets/post_rich_widget.dart';
+import 'package:reef/feature/categories/data/post_model.dart';
 import 'package:reef/feature/my_posts/logic/MyPost_cubit/my_post_cubit.dart';
 import 'package:reef/feature/my_posts/ui/screens/detals_MyPosts_screen.dart';
 import 'package:reef/feature/my_posts/ui/widgets/post_card_widget.dart';
@@ -25,6 +32,8 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
   @override
   void initState() {
     MyPostCubit.get(context).getMyPosts();
+    ASkEngineerCubit.get(context).getEngineer();
+    ASkEngineerCubit.get(context).getAllAds();
     super.initState();
   }
 
@@ -170,8 +179,8 @@ Widget postDetails(AdModel ad, AskEngineerState state) {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: 5.w,
-                vertical: 5.h,
+                horizontal: 10.w,
+                vertical: 10.h,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -184,13 +193,12 @@ Widget postDetails(AdModel ad, AskEngineerState state) {
                         fontsize: 12.sp,
                         color: Color(0xFFc7c7c7),
                       ),
-
-                      // InkWell(
-                      //   onTap: () {
-                      //     showPostOptionsBottomSheet(context);
-                      //   },
-                      //   child: Icon(Icons.more_vert, size: 18.sp),
-                      // ),
+                      InkWell(
+                        onTap: () {
+                          showPostOptionsBottomSheet(context, ad);
+                        },
+                        child: Icon(Icons.more_vert, size: 18.sp),
+                      ),
                     ],
                   ),
                   Gap(5.h),
@@ -201,31 +209,210 @@ Widget postDetails(AdModel ad, AskEngineerState state) {
                     textAlign: TextAlign.right,
                   ),
                   Gap(5.h),
-                  AppText(
-                    text: ad.description,
-                    fontsize: 11.sp,
+                  Text(
+                    ad.description,
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      color: Color(0xFF7C7C7C),
+                      fontFamily: 'tajawal',
+                    ),
                     textAlign: TextAlign.right,
-                    color: Color(0xFF7C7C7C),
                   ),
                 ],
               ),
             ),
-            Container(
-              width: double.infinity,
-              height: 150.h,
-              child: Image.network(
-                ad.images[0].isNotEmpty
-                    ? 'http://82.29.172.199:8001${ad.images[0]}'
-                    : 'assets/images/default_product_image.png',
-                height: 127.h,
-                width: 123.w,
-                fit: BoxFit.fill,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ImageViewerScreen(
+                      imageUrl: ad.images[0].isNotEmpty
+                          ? 'http://82.29.172.199:8001${ad.images[0]}'
+                          : '', // هنفحصه في الشاشة نفسها
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                height: 150.h,
+                child: Image.network(
+                  ad.images[0].isNotEmpty
+                      ? 'http://82.29.172.199:8001${ad.images[0]}'
+                      : 'http://82.29.172.199:8001/assets/images/default_product_image.png',
+                  height: 127.h,
+                  width: 123.w,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Image.asset('assets/images/default_product_image.png'),
+                ),
               ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                right: 10.w,
+                left: 10.w,
+                top: 7.h,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AppText(
+                    text: '${ad.commentsCount} تعليقات',
+                    fontsize: 10.sp,
+                    color: Color(0xFFc7c7c7),
+                  ),
+                  AppText(
+                    text: ' ${likeCount} إعجاب',
+                    fontsize: 10.sp,
+                    color: Color(0xFFc7c7c7),
+                  ),
+                ],
+              ),
+            ),
+            Divider(
+              color: Color(0xFFc7c7c7).withOpacity(0.5),
+              thickness: .7.h,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                PostRich(
+                  img: 'assets/images/comment.png',
+                  text: 'تعليق',
+                  onTap: () {
+                    showModalBottomSheet(
+                      //  isScrollControlled: true,
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(20)),
+                      ),
+                      context: context,
+                      builder: (context) {
+                        return CommentEngineerWidget(
+                          adsId: ad.id,
+                        );
+                      },
+                    );
+                  },
+                ),
+                state is LoadingChangeLikeState
+                    ? SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                        child: CircularProgressIndicator(
+                          color: Colors.green,
+                          strokeWidth: 2.0,
+                        ),
+                      )
+                    : PostRich(
+                        img: isLiked
+                            ? 'assets/images/activeLike.png'
+                            : 'assets/images/like.png',
+                        text: 'إعجاب',
+                        color: isLiked ? Colors.green : Color(0xFFc7c7c7),
+                        onTap: () {
+                          setLocalState(() {
+                            isLiked = !isLiked;
+                            likeCount += isLiked ? 1 : -1;
+                          });
+                          ASkEngineerCubit.get(context)
+                              .ChangeLike(adsId: ad.id);
+                        },
+                      ),
+              ],
             ),
           ],
         ),
       );
     },
+  );
+}
+
+void showPostOptionsBottomSheet(BuildContext context, AdModel ad) {
+  showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    backgroundColor: Colors.white,
+    builder: (_) => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade400,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 20),
+          _buildOptionItem('edit', "تعديل", () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UpdateEngPostScreen(
+                  id: ad.id,
+                  title: ad.title,
+                  description: ad.description,
+                  imageUrl: ad.images.isNotEmpty ? ad.images[0] : null,
+                ),
+              ),
+            ).then((value) {
+              if (value == true) {
+                // هنا تعمل get للبيانات من جديد
+                ASkEngineerCubit.get(context).getAllAds();
+              }
+            });
+          }),
+          _buildOptionItem("delete", "حذف", () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text("تأكيد الحذف"),
+                content: Text("هل أنت متأكد من حذف هذا الإعلان؟"),
+                actions: [
+                  TextButton(
+                    child: Text("إلغاء"),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  TextButton(
+                    child: Text("حذف"),
+                    onPressed: () {
+                      Navigator.pop(context); // قفل الديالوج
+                      ASkEngineerCubit.get(context).deleteAd(ad.id, context);
+                    },
+                  ),
+                ],
+              ),
+            );
+          }),
+          const SizedBox(height: 10),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _buildOptionItem(String icon, String title, VoidCallback onTap) {
+  return ListTile(
+    onTap: onTap,
+    contentPadding: EdgeInsets.zero,
+    leading: Image.asset(
+      'assets/images/$icon.png',
+      width: 20.w,
+      height: 20.h,
+    ),
+    title: Text(
+      title,
+      style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'tajawal'),
+      textAlign: TextAlign.right,
+    ),
   );
 }
 

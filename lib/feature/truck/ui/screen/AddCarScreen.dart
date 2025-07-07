@@ -38,7 +38,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
   final TextEditingController capacityController = TextEditingController();
   final TextEditingController cargoTypeController = TextEditingController();
   final TextEditingController lastMaintenanceController =
-  TextEditingController();
+      TextEditingController();
 
   String? dlivary;
 
@@ -53,25 +53,33 @@ class _AddCarScreenState extends State<AddCarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<DriverCubit,DriverState>(
-      listener: (context,state){
-        if(state is AddDriverSuccess){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>NavbarWidget(
-            role: CacheHelper.getData('role')!,
-          )));
+    return BlocConsumer<DriverCubit, DriverState>(
+      listener: (context, state) {
+        if (state is AddDriverSuccess) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => NavbarWidget(
+                        role: CacheHelper.getData('role')!,
+                      )));
         }
-        if(state is AddDriverError){
-          showToast(message: 'يوجد لديك عربه بالفعل!', color: Colors.red);
+        if (state is AddDriverError) {
+          showToast(
+              color: Colors.red,
+              msg: 'يوجد لديك عربه بالفعل!',
+              state: null,
+              message: '');
         }
       },
-      builder: (context,state){
+      builder: (context, state) {
         return Scaffold(
           body: SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return SingleChildScrollView(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    constraints:
+                        BoxConstraints(minHeight: constraints.maxHeight),
                     child: IntrinsicHeight(
                       child: Padding(
                         padding: EdgeInsets.only(
@@ -118,7 +126,8 @@ class _AddCarScreenState extends State<AddCarScreen> {
                             //   ],
                             // ),
                             Gap(25.h),
-                            AppText(text: 'عنوان البوست', textAlign: TextAlign.end),
+                            AppText(
+                                text: 'عنوان البوست', textAlign: TextAlign.end),
                             CustomFeild(
                               obscureText: false,
                               hintText: "اكتب عنوان البوست هنا",
@@ -130,7 +139,8 @@ class _AddCarScreenState extends State<AddCarScreen> {
                               },
                             ),
                             Gap(15.h),
-                            AppText(text: "محتوى البوست", textAlign: TextAlign.end),
+                            AppText(
+                                text: "محتوى البوست", textAlign: TextAlign.end),
                             CustomFeild(
                               obscureText: false,
                               hintText: "اكتب محتوى البوست هنا",
@@ -285,31 +295,32 @@ class _AddCarScreenState extends State<AddCarScreen> {
                                   children: [
                                     selectedImages.isNotEmpty
                                         ? Wrap(
-                                      spacing: 8,
-                                      runSpacing: 8,
-                                      children:
-                                      selectedImages
-                                          .map(
-                                            (img) => ClipRRect(
-                                          borderRadius:
-                                          BorderRadius.circular(8),
-                                          child: Image.file(
-                                            img,
-                                            width: 60,
-                                            height: 60,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      )
-                                          .toList(),
-                                    )
+                                            spacing: 8,
+                                            runSpacing: 8,
+                                            children: selectedImages
+                                                .map(
+                                                  (img) => ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    child: Image.file(
+                                                      img,
+                                                      width: 60,
+                                                      height: 60,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                          )
                                         : Image.asset(
-                                      'assets/images/blankImg.png',
-                                      height: 60,
-                                      width: 60,
-                                    ),
+                                            'assets/images/blankImg.png',
+                                            height: 60,
+                                            width: 60,
+                                          ),
                                     Gap(8.h),
-                                    AppText(text: "اضافة صورة", fontsize: 15.sp),
+                                    AppText(
+                                        text: "اضافة صورة", fontsize: 15.sp),
                                     Gap(4.h),
                                     AppText(
                                       text: "(اختياري) يفضل صورة توضيحية",
@@ -328,7 +339,8 @@ class _AddCarScreenState extends State<AddCarScreen> {
                                           border: Border.all(
                                             color: AppColors.primary,
                                           ),
-                                          borderRadius: BorderRadius.circular(10.r),
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
                                         ),
                                         child: AppText(
                                           text: 'اختيار صورة',
@@ -350,16 +362,19 @@ class _AddCarScreenState extends State<AddCarScreen> {
                                   vehicleType: carTypeController.text,
                                   vehicleCapacity: capacityController.text,
                                   cargoType: cargoTypeController.text,
-                                  lastMaintenance: lastMaintenanceController.text,
+                                  lastMaintenance:
+                                      lastMaintenanceController.text,
                                   deliveryType: dlivary ?? '',
                                   vehicleImages: [],
                                 );
                                 print('title: ${driver.title}');
                                 print('description: ${driver.description}');
                                 print('vehicleType: ${driver.vehicleType}');
-                                print('vehicleCapacity: ${driver.vehicleCapacity}');
+                                print(
+                                    'vehicleCapacity: ${driver.vehicleCapacity}');
                                 print('cargoType: ${driver.cargoType}');
-                                print('lastMaintenance: ${driver.lastMaintenance}');
+                                print(
+                                    'lastMaintenance: ${driver.lastMaintenance}');
                                 print('deliveryType: ${driver.deliveryType}');
                                 print(
                                   'vehicleImages count: ${selectedImages.length}',
@@ -388,7 +403,9 @@ class _AddCarScreenState extends State<AddCarScreen> {
                                 ),
                                 child: Center(
                                   child: AppText(
-                                    text: state is AddDriverLoading?"....يتم نشر البوست": "نشر البوست",
+                                    text: state is AddDriverLoading
+                                        ? "....يتم نشر البوست"
+                                        : "نشر البوست",
                                     color: Colors.white,
                                   ),
                                 ),
@@ -405,8 +422,6 @@ class _AddCarScreenState extends State<AddCarScreen> {
           ),
         );
       },
-
-
     );
   }
 

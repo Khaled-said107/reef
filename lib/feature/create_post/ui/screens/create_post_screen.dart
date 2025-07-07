@@ -61,22 +61,29 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CreatePostCubit, CreatePostState>(
-      listener: (context,state){
-        if(state is CreatePostFailure){
+      listener: (context, state) {
+        if (state is CreatePostFailure) {
           showToast(
-            message: 'ادخل باقي المعلومات ',
-            color: Colors.red
-          );
+              message: 'ادخل باقي المعلومات ',
+              color: Colors.red,
+              msg: '',
+              state: null);
         }
-        if(state is CreatePostSuccess){
+        if (state is CreatePostSuccess) {
           showToast(
               message: 'تم نشر الاعلان بنجاح',
-              color: Colors.green
-          );
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>NavbarWidget(role: CacheHelper.getData('role')!,)));
+              color: Colors.green,
+              msg: '',
+              state: null);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => NavbarWidget(
+                        role: CacheHelper.getData('role')!,
+                      )));
         }
       },
-      builder: (context,state){
+      builder: (context, state) {
         return Scaffold(
           body: SafeArea(
             child: Column(
@@ -85,7 +92,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 _image(),
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
                     child: ListView(
                       children: [
                         Row(
@@ -94,18 +102,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               child: BlocBuilder<CategoryCubit, CategoryState>(
                                 builder: (context, state) {
                                   final cubit = CategoryCubit.get(context);
-                                  final subCategories =
-                                      cubit.subCategoriesMap[selectedCategoryId] ??
-                                          [];
+                                  final subCategories = cubit.subCategoriesMap[
+                                          selectedCategoryId] ??
+                                      [];
                                   return _dropDown(
                                     value: selectedSubCategoryId,
-                                    onChanged:
-                                        (val) => setState(
-                                          () => selectedSubCategoryId = val,
+                                    onChanged: (val) => setState(
+                                      () => selectedSubCategoryId = val,
                                     ),
                                     hint: 'اختر الصنف ',
-                                    items:
-                                    subCategories.map((sub) {
+                                    items: subCategories.map((sub) {
                                       return DropdownMenuItem(
                                         value: sub.id,
                                         child: Text(sub.name),
@@ -136,8 +142,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                       }
                                     },
                                     hint: 'اختر نوع المنتج',
-                                    items:
-                                    categories.map((category) {
+                                    items: categories.map((category) {
                                       return DropdownMenuItem(
                                         value: category.id,
                                         child: Text(category.name),
@@ -165,10 +170,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                             Expanded(
                               child: _dropDown(
                                 value: priceType,
-                                onChanged: (val) => setState(() => priceType = val),
+                                onChanged: (val) =>
+                                    setState(() => priceType = val),
                                 hint: 'اختر الوحدة',
-                                items:
-                                priceUnits.map((item) {
+                                items: priceUnits.map((item) {
                                   return DropdownMenuItem<String>(
                                     value: item,
                                     child: Text(item),
@@ -194,8 +199,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                 value: type3,
                                 onChanged: (val) => setState(() => type3 = val),
                                 hint: 'اختر الوزن',
-                                items:
-                                quantityUnits.map((item) {
+                                items: quantityUnits.map((item) {
                                   return DropdownMenuItem<String>(
                                     value: item,
                                     child: Text(item),
@@ -221,8 +225,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                 value: type4,
                                 onChanged: (val) => setState(() => type4 = val),
                                 hint: 'اختر نوع البيع',
-                                items:
-                                sellTypes.map((item) {
+                                items: sellTypes.map((item) {
                                   return DropdownMenuItem<String>(
                                     value: item,
                                     child: Text(item),
@@ -234,11 +237,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                             Expanded(
                               child: _dropDown(
                                 value: selectedValue,
-                                onChanged:
-                                    (val) => setState(() => selectedValue = val),
+                                onChanged: (val) =>
+                                    setState(() => selectedValue = val),
                                 hint: 'اخترالحالة',
-                                items:
-                                productConditions.map((item) {
+                                items: productConditions.map((item) {
                                   return DropdownMenuItem<String>(
                                     value: item,
                                     child: Text(item),
@@ -251,7 +253,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         ModificationsFields(
                           title: 'العنوان',
                           hint:
-                          'اكتب اسم المحافظة أو المركز، مثل: "البحيرة - دمنهور"',
+                              'اكتب اسم المحافظة أو المركز، مثل: "البحيرة - دمنهور"',
                           controller: addressController,
                         ),
                         Row(
@@ -315,73 +317,74 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   Widget _image() => Stack(
-    children: [
-      Container(
-        color: AppColors.white,
-        height: 250.h,
-        width: double.infinity,
-        child: selectedImages.isEmpty
-            ? Center(
-          child: Image.asset(
-            'assets/images/image.png',
-            height: 106.h,
-            width: 151.w,
-          ),
-        )
-            : PageView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: selectedImages.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: EdgeInsets.only(right: 10.w),
-              child: Image.file(
-                selectedImages[index],
-                width: 151.w,
-                height: 106.h,
-                fit: BoxFit.cover,
-              ),
-            );
-          },
-        ),
-      ),
-      Positioned(
-        bottom: 10.h,
-        left: 10.w,
-        child: InkWell(
-          onTap: pickImages,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
-            height: 35.h,
-            width: 148.w,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.r),
-              color: AppColors.white,
-            ),
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.edit, color: AppColors.black),
-                  Gap(10.w),
-                  AppText(
-                    text: 'إضافة صور',
-                    color: AppColors.black,
-                    fontsize: 13.sp,
+        children: [
+          Container(
+            color: AppColors.white,
+            height: 250.h,
+            width: double.infinity,
+            child: selectedImages.isEmpty
+                ? Center(
+                    child: Image.asset(
+                      'assets/images/image.png',
+                      height: 106.h,
+                      width: 151.w,
+                    ),
+                  )
+                : PageView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: selectedImages.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: EdgeInsets.only(right: 10.w),
+                        child: Image.file(
+                          selectedImages[index],
+                          width: 151.w,
+                          height: 106.h,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
                   ),
-                ],
+          ),
+          Positioned(
+            bottom: 10.h,
+            left: 10.w,
+            child: InkWell(
+              onTap: pickImages,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                height: 35.h,
+                width: 148.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: AppColors.white,
+                ),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.edit, color: AppColors.black),
+                      Gap(10.w),
+                      AppText(
+                        text: 'إضافة صور',
+                        color: AppColors.black,
+                        fontsize: 13.sp,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
-    ],
-  );
+        ],
+      );
 
   InkWell _buttons() {
     return InkWell(
       onTap: () {
         if (selectedImages.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('يرجى اختيار صور')));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('يرجى اختيار صور')));
           return;
         }
 
@@ -406,7 +409,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
         BlocProvider.of<CreatePostCubit>(
           context,
-        ).createPostWithImage(model, selectedImages !);
+        ).createPostWithImage(model, selectedImages!);
       },
       child: Container(
         height: 45.h,
@@ -464,7 +467,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     final pickedFiles = await ImagePicker().pickMultiImage();
     if (pickedFiles.isNotEmpty) {
       setState(() {
-        selectedImages  = pickedFiles.map((e) => File(e.path)).toList();
+        selectedImages = pickedFiles.map((e) => File(e.path)).toList();
       });
     }
   }

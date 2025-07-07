@@ -14,8 +14,8 @@ class GetAllAdsModel {
       status: json['status'] ?? '',
       results: json['results'] ?? 0,
       ads: (json['data']['ads'] as List<dynamic>?)
-          ?.map((e) => AdModel.fromJson(e))
-          .toList() ??
+              ?.map((e) => AdModel.fromJson(e))
+              .toList() ??
           [],
     );
   }
@@ -35,26 +35,26 @@ class AdModel {
   final int commentsCount;
   final bool likedByCurrentUser;
 
-
-  AdModel({
-    required this.id,
-    required this.user,
-    required this.images,
-    required this.views,
-    required this.accept,
-    required this.title,
-    required this.description,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.likesCount,
-    required this.commentsCount,
-    required this.likedByCurrentUser
-  });
+  AdModel(
+      {required this.id,
+      required this.user,
+      required this.images,
+      required this.views,
+      required this.accept,
+      required this.title,
+      required this.description,
+      required this.createdAt,
+      required this.updatedAt,
+      required this.likesCount,
+      required this.commentsCount,
+      required this.likedByCurrentUser});
 
   factory AdModel.fromJson(Map<String, dynamic> json) {
     return AdModel(
       id: json['_id'] ?? '',
-      user: AdUser.fromJson(json['userId']),
+      user: json['userId'] is Map
+          ? AdUser.fromJson(json['userId'])
+          : AdUser(id: json['userId'] ?? '', name: ''),
       images: List<String>.from(json['images'] ?? []),
       views: json['views'] ?? 0,
       accept: json['accept'] ?? false,
@@ -65,7 +65,6 @@ class AdModel {
       likesCount: json['likesCount'] ?? 0,
       commentsCount: json['commentsCount'] ?? 0,
       likedByCurrentUser: json['likedByCurrentUser'] ?? false,
-
     );
   }
 }

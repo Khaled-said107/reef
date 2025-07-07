@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reef/feature/askEngineer/ui/screens/ask_engineer_screen.dart';
+import 'package:reef/feature/askEngineer/ui/screens/update_eng_post_screen.dart';
 import 'package:reef/feature/auth/ui/screens/confirm_password_screen.dart';
 import 'package:reef/feature/auth/ui/screens/forget_password_screen.dart';
 import 'package:reef/feature/auth/ui/screens/login_screen.dart';
@@ -105,6 +106,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => TrucksScreen());
       case '/addCar':
         return MaterialPageRoute(builder: (_) => AddCarScreen());
+      // case '/updateEngPost':
+      //   return MaterialPageRoute(builder: (_) => UpdateEngPostScreen());
       case '/truckDetailsScreen':
         final driver = settings.arguments as DriverModel;
         return MaterialPageRoute(

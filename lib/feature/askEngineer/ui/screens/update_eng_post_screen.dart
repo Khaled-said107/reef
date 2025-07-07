@@ -19,22 +19,37 @@ import '../../../profile/logic/cubit/profile_cubit.dart';
 import '../../logic/cubit/ask_engineer_cubit.dart';
 import '../../logic/cubit/ask_engineer_state.dart';
 
-class EngineerAddPost extends StatefulWidget {
-  const EngineerAddPost({super.key});
+class UpdateEngPostScreen extends StatefulWidget {
+  final String id;
+  final String title;
+  final String description;
+  final String? imageUrl;
+  const UpdateEngPostScreen(
+      {super.key,
+      required this.id,
+      required this.title,
+      required this.description,
+      this.imageUrl});
 
   @override
-  State<EngineerAddPost> createState() => _EngineerAddPostState();
+  State<UpdateEngPostScreen> createState() => _UpdateEngPostScreenState();
 }
 
-class _EngineerAddPostState extends State<EngineerAddPost> {
+class _UpdateEngPostScreenState extends State<UpdateEngPostScreen> {
   final TextEditingController TitelController = TextEditingController();
   final TextEditingController DetalsController = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    ProfileCubit.get(context).getUser();
-    ASkEngineerCubit.get(context).getEngineer();
+    TitelController.text = widget.title;
+    DetalsController.text = widget.description;
+
+    // تحميل الصورة من URL وحفظها كـ File اختياري
+    if (widget.imageUrl != null && widget.imageUrl!.isNotEmpty) {
+      selectedImage = File(
+          widget.imageUrl!); // لو محتاج تعمل Download فعلي قولي أساعدك فيها
+    }
   }
 
   File? selectedImage;
@@ -57,23 +72,19 @@ class _EngineerAddPostState extends State<EngineerAddPost> {
           builder: (context, constraints) {
             return BlocConsumer<ASkEngineerCubit, AskEngineerState>(
               listener: (context, state) {
-                if (state is SuccessCreatePostState) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NavbarWidget(
-                                role: CacheHelper.getData('role')!,
-                              )));
+                if (state is SuccessUpdatePostState) {
                   showToast(
-                      message:
-                          'تم ارسال الاعلان بنجاح , وسيتم قبوله في اسرع وقت',
-                      color: Colors.green,
-                      msg: '',
-                      state: null);
+                    message: 'تم تعديل الإعلان بنجاح',
+                    color: Colors.green,
+                    msg: '',
+                    state: null,
+                  );
+
+                  Navigator.pop(context, true);
                 }
-                if (state is ErrorCreatePostState) {
+                if (state is ErrorUpdatePostState) {
                   showToast(
-                      message: 'ادخل باقي المعلومات',
+                      message: 'حصل خطأ أثناء التعديل',
                       color: Colors.red,
                       msg: '',
                       state: null);
@@ -95,7 +106,7 @@ class _EngineerAddPostState extends State<EngineerAddPost> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             header(
-                                name: "أضف منشور جديد",
+                                name: "تعديل المنشور ",
                                 icon: Icons.navigate_next),
                             Gap(15.h),
                             engineer != null
@@ -177,14 +188,16 @@ class _EngineerAddPostState extends State<EngineerAddPost> {
                                 },
                                 maxLines: null,
                                 minLines: 6,
+
                                 keyboardType: TextInputType.multiline,
                                 textAlign:
                                     TextAlign.right, // يجعل النص يبدأ من اليمين
                                 textDirection: TextDirection
                                     .rtl, // يدعم اللغات من اليمين لليسار مثل العربية
                                 decoration: InputDecoration(
-                                  hintText:
-                                      " ...درجة الحرارة المثالية لزراعة الفراولة",
+                                  hint: AppText(text: 'fdsgdshnj'),
+                                  // hintText:
+                                  //     " ...درجة الحرارة المثالية لزراعة الفراولة",
                                   border: InputBorder.none,
                                   contentPadding: EdgeInsets.symmetric(
                                       horizontal: 12.w, vertical: 12.h),
@@ -256,11 +269,14 @@ class _EngineerAddPostState extends State<EngineerAddPost> {
                                 ? Center(child: CircularProgressIndicator())
                                 : GestureDetector(
                                     onTap: () {
+                                      print("✅ Button clicked for update");
                                       ASkEngineerCubit.get(context)
-                                          .createEngPost(
-                                        TitelController.text,
-                                        DetalsController.text,
-                                        selectedImage, // الآن تقبل null عادي
+                                          .updatePostWithImage(
+                                        postId: widget.id,
+                                        title: TitelController.text,
+                                        description: DetalsController.text,
+                                        imageFile:
+                                            selectedImage, // ممكن تبعت null لو المستخدم ما اختارش صورة
                                       );
                                     },
                                     child: Container(
@@ -272,7 +288,7 @@ class _EngineerAddPostState extends State<EngineerAddPost> {
                                       ),
                                       child: Center(
                                         child: AppText(
-                                          text: "نشر البوست",
+                                          text: "تعديل البوست",
                                           color: Colors.white,
                                         ),
                                       ),

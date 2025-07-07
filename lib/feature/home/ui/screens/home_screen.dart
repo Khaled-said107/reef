@@ -185,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: GestureDetector(
                                 onTap: () {
                                   context
-                                      .pushNamed(Routes.askEngineerScreen)
+                                      .pushNamed(Routes.engAddPost)
                                       .then((_) {
                                     setState(() {
                                       _searchController.clear();
