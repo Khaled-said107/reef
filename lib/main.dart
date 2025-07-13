@@ -8,12 +8,16 @@ import 'package:reef/core/routing/app_router.dart';
 import 'package:reef/core/routing/routes.dart';
 import 'package:reef/feature/categories/logic/cubit/category_cubit.dart';
 import 'package:reef/feature/create_post/logic/cubit/create_post_cubit.dart';
+
 import 'package:reef/feature/my_posts/logic/MyPost_cubit/my_post_cubit.dart';
+import 'package:reef/feature/my_posts/logic/UpdateMyCarCubit/cubit/up_date_my_car_cubit.dart';
+import 'package:reef/feature/my_posts/logic/cubit/update_my_car_cubit_cubit.dart';
 import 'package:reef/feature/payment/logic/cubit/payment_cubit.dart';
 
 import 'core/network/share/bloc_observer.dart';
 import 'feature/askEngineer/logic/cubit/ask_engineer_cubit.dart';
 import 'feature/categories/logic/cubit/get_all_posts_cubit/get_all_posts_cubit.dart';
+
 import 'feature/my_posts/logic/UpdateMyPost_Cubit/update_my_post_cubit.dart';
 import 'feature/profile/logic/cubit/profile_cubit.dart';
 import 'feature/truck/logic/dreiver_cubit.dart';
@@ -54,6 +58,8 @@ class MainApp extends StatelessWidget {
           BlocProvider(create: (context) => DriverCubit()),
           BlocProvider(create: (context) => ASkEngineerCubit()),
           BlocProvider(create: (context) => PaymentCubit()),
+          BlocProvider(create: (context) => MyCarCubit()),
+          BlocProvider(create: (context) => UpdateMyCarCubit()),
           BlocProvider(create: (context) => ProfileCubit()..getUser()),
         ],
         child: MaterialApp(

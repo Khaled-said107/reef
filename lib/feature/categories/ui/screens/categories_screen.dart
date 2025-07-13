@@ -32,132 +32,131 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(children: [Gap(20.h), _header(), _category_item()]),
+        child: SingleChildScrollView(
+            child: Column(children: [Gap(20.h), _header(), _category_item()])),
       ),
     );
   }
 
-  Expanded _category_item() {
-    return Expanded(
-      child: Container(
-        height: double.infinity,
-        child: BlocBuilder<CategoryCubit, CategoryState>(
-          builder: (context, state) {
-            final cubit = context.read<CategoryCubit>();
-            final categories = cubit.categories;
-            return ListView.separated(
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                bool isExpanded = isExpandedIndex == index;
-                final subCats = cubit.subCategoriesMap[category.id] ?? [];
-                return Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          if (isExpanded) {
-                            isExpandedIndex = null;
-                          } else {
-                            isExpandedIndex = index;
-                            print('🔵 Pressed categoryId: ${category.id}');
-                            if (!cubit.subCategoriesMap.containsKey(
-                              category.id,
-                            )) {
-                              cubit.getSubCategories(category.id);
-                            }
-                          }
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.r),
-                          color: Color(0xFFE1EADB),
-                        ),
-                        margin: EdgeInsets.symmetric(
-                          vertical: 7.h,
-                          horizontal: 15.w,
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        height: 70.h,
-                        width: double.infinity,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              isExpandedIndex == index
-                                  ? SvgPicture.asset('assets/images/dropUp.svg')
-                                  : SvgPicture.asset(
-                                    'assets/images/dropdown.svg',
-                                  ),
-                              AppText(
-                                fontsize: 16.sp,
-                                fontWeight: FontWeight.w500,
-                                text: category.name,
-                              ),
-                            ],
+  Widget _category_item() {
+    return BlocBuilder<CategoryCubit, CategoryState>(
+      builder: (context, state) {
+        final cubit = context.read<CategoryCubit>();
+        final categories = cubit.categories;
+        return ListView.separated(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            final category = categories[index];
+            bool isExpanded = isExpandedIndex == index;
+            final subCats = cubit.subCategoriesMap[category.id] ?? [];
+            return Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (isExpanded) {
+                        isExpandedIndex = null;
+                      } else {
+                        isExpandedIndex = index;
+                        print('🔵 Pressed categoryId: ${category.id}');
+                        if (!cubit.subCategoriesMap.containsKey(
+                          category.id,
+                        )) {
+                          cubit.getSubCategories(category.id);
+                        }
+                      }
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.r),
+                      color: Color(0xFFE1EADB),
+                    ),
+                    margin: EdgeInsets.symmetric(
+                      vertical: 7.h,
+                      horizontal: 15.w,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    height: 70.h,
+                    width: double.infinity,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          isExpandedIndex == index
+                              ? SvgPicture.asset('assets/images/dropUp.svg')
+                              : SvgPicture.asset(
+                                  'assets/images/dropdown.svg',
+                                ),
+                          AppText(
+                            fontsize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                            text: category.name,
                           ),
-                        ),
+                        ],
                       ),
                     ),
-                    if (isExpanded)
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 15.w,
-                          vertical: 15.h,
-                        ),
-                        child:
-                            state is SubCategoriesLoading
-                                ? Center(child: CircularProgressIndicator())
-                                : SizedBox(
-                                  height: (subCats.length*50).h,
-                                  child: ListView.separated(
-                                    itemBuilder: (context, index) {
-                                      final subCategory = subCats[index];
-                                      return InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context)=>SubCategoryScreen(
+                  ),
+                ),
+                if (isExpanded)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 15.w,
+                      vertical: 15.h,
+                    ),
+                    child: state is SubCategoriesLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : SizedBox(
+                            height: (subCats.length * 40).h,
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final subCategory = subCats[index];
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SubCategoryScreen(
                                                     name: subCategory.name,
-                                                    subCategoryId: subCategory.id
-                                                  )
-                                              ));
-                                          // context.pushNamed(
-                                          //   Routes.subCategories,
-                                          // );
-                                        },
-                                        child: AppText(
-                                          textAlign: TextAlign.end,
-                                          text: subCategory.name,
-                                        ),
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) {
-                                      return Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 7.h,
-                                        ),
-                                        child: Divider(
-                                          color: Color(0xffEFEAD8),
-                                        ),
-                                      );
-                                    },
-                                    itemCount: subCats.length,
+                                                    subCategoryId:
+                                                        subCategory.id)));
+                                    // context.pushNamed(
+                                    //   Routes.subCategories,
+                                    // );
+                                  },
+                                  child: AppText(
+                                    textAlign: TextAlign.end,
+                                    text: subCategory.name,
                                   ),
-                                ),
-                      ),
-                  ],
-                );
-              },
-              separatorBuilder: (context, index) {
-                return Gap(3.h);
-              },
-              itemCount: categories.length,
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 7.h,
+                                  ),
+                                  child: Divider(
+                                    color: Color(0xffEFEAD8),
+                                  ),
+                                );
+                              },
+                              itemCount: subCats.length,
+                            ),
+                          ),
+                  ),
+              ],
             );
           },
-        ),
-      ),
+          separatorBuilder: (context, index) {
+            return Gap(3.h);
+          },
+          itemCount: categories.length,
+        );
+      },
     );
   }
 

@@ -10,20 +10,20 @@ class DriversResponseModel {
   });
 
   factory DriversResponseModel.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] ?? {}; // <-- امسك الـ data هنا
+    final driversJson = data['drivers'] as List<dynamic>? ?? [];
+
     return DriversResponseModel(
       status: json['status'] ?? '',
       results: json['results'] ?? 0,
-      drivers: (json['data']['drivers'] as List<dynamic>?)
-              ?.map((e) => DriverModel.fromJson(e))
-              .toList() ??
-          [],
+      drivers: driversJson.map((e) => DriverModel.fromJson(e)).toList(),
     );
   }
 }
 
 class DriverModel {
   final String id;
-  final UserModel user;
+  final UserModel? user; // خليها Nullable
   final String title;
   final String description;
   final String vehicleType;
@@ -37,7 +37,7 @@ class DriverModel {
 
   DriverModel({
     required this.id,
-    required this.user,
+    this.user,
     required this.title,
     required this.description,
     required this.vehicleType,
@@ -51,9 +51,11 @@ class DriverModel {
   });
 
   factory DriverModel.fromJson(Map<String, dynamic> json) {
+    print('🚚 Driver ID: ${json['_id']}');
+
     return DriverModel(
       id: json['_id'] ?? '',
-      user: UserModel.fromJson(json['user']),
+      user: json['user'] != null ? UserModel.fromJson(json['user']) : null,
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       vehicleType: json['vehicleType'] ?? '',
@@ -93,6 +95,16 @@ class UserModel {
       email: json['email'] ?? '',
       address: json['address'] ?? '',
       area: json['area'] ?? '',
+    );
+  }
+  factory UserModel.empty() {
+    return UserModel(
+      id: '',
+      name: '',
+      phone: '',
+      email: '',
+      address: '',
+      area: '',
     );
   }
 }

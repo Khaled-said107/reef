@@ -19,46 +19,67 @@ class DriverCubit extends Cubit<DriverState> {
 
   static DriverCubit get(context) => BlocProvider.of(context);
 
-  late DriversResponseModel? driverModel;
+  DriversResponseModel? driverModel;
+
   late DeliveryData? deliveryData;
-  late DriversResponseModel? allDeliveryData;
+  DriversResponseModel? allDeliveryData;
 
   Future<void> featchDrivers({Map<String, dynamic>? filters}) async {
     emit(DriverLoading());
+    print('drivers count: ${driverModel?.drivers.length}');
+
     try {
+      final token = CacheHelper.getData('token');
+
       final response = await DioHelper.getData(
         url: 'driver',
-        token: CacheHelper.getData('token'),
-        query: filters ?? {},
+        token: token,
+        query: filters,
       );
-      driverModel = DriversResponseModel.fromJson(response.data);
-      allDeliveryData = driverModel;
-      emit(DriverSuccess(driverModel));
-      print(response.data);
-    } catch (e) {
-      final errorMessage = handleDioError(e);
-      emit(DriverError(errorMessage));
-      if (e is DioException && e.response != null) {
-        print('🧩 Server error body: ${e.response?.data}');
+
+      final data = response.data;
+      print("✅ Full API response: $data");
+
+      if (data != null &&
+          data['data'] != null &&
+          data['data']['drivers'] != null) {
+        driverModel = DriversResponseModel.fromJson(data);
+        allDeliveryData = driverModel;
+        emit(DriverSuccess(driverModel));
+      } else {
+        driverModel = DriversResponseModel(drivers: []);
+        emit(DriverError('الرد لا يحتوي على بيانات السائقين'));
       }
-      print("❌ Dio Error Message: $errorMessage");
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        emit(DriverError(
+            "انشر اعلان اولا ليس لديك صلاحية للوصول إلى البيانات."));
+      } else {
+        emit(DriverError("حدث خطأ: ${e.message}"));
+      }
     }
   }
 
   void searchDrivers(String query) {
+    if (allDeliveryData == null) return;
+
     if (query.isEmpty) {
       driverModel = allDeliveryData;
     } else {
       final filtered = allDeliveryData!.drivers.where((driver) {
-        final name = driver.title.toLowerCase() ?? '';
-        final address = driver.user.address.toLowerCase() ?? '';
+        final name = driver.title.toLowerCase();
+        final address = driver.user?.address.toLowerCase() ?? '';
         return name.contains(query.toLowerCase()) ||
             address.contains(query.toLowerCase());
       }).toList();
+
       driverModel = DriversResponseModel(
+        status: allDeliveryData!.status,
+        results: filtered.length,
         drivers: filtered,
       );
     }
+
     emit(DriverSuccess(driverModel));
   }
 

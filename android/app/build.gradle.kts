@@ -1,7 +1,16 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+val keyProperties = Properties()
+val keyPropertiesFile = rootProject.file("key.properties")
+if (keyPropertiesFile.exists()) {
+    keyProperties.load(FileInputStream(keyPropertiesFile))
 }
 
 android {
@@ -27,13 +36,13 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file("upload-keystore.jks") // عدل المسار حسب ملفك
-            storePassword = "Kh123456#7"
-            keyAlias = "upload"
-            keyPassword = "Kh123456#7"
-        }
+    create("release") {
+        keyAlias = keyProperties["keyAlias"] as String
+        keyPassword = keyProperties["keyPassword"] as String
+        storeFile = file(keyProperties["storeFile"] as String)
+        storePassword = keyProperties["storePassword"] as String
     }
+}
 
     buildTypes {
         getByName("release") {

@@ -10,6 +10,7 @@ import 'package:reef/core/widgets/app_text.dart';
 import 'package:reef/core/widgets/custom_button.dart';
 import 'package:reef/feature/auth/ui/widgets/text_field_widget.dart';
 import 'package:reef/feature/profile/logic/cubit/profile_cubit.dart';
+import 'package:reef/feature/profile/ui/screens/help_Screen.dart';
 import 'package:reef/feature/profile/ui/screens/update_profile_screen.dart';
 import 'package:reef/feature/profile/ui/widgets/posts_manage.dart';
 
@@ -35,9 +36,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: BlocConsumer<ProfileCubit, ProfileState>(
           listener: (context, state) {
             if (state is ProfileError) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text("خطأ: ${state.message}")));
+              // ScaffoldMessenger.of(
+              //   context,
+              // ).showSnackBar(SnackBar(content: Text("خطأ: ${state.message}")));
             }
           },
           builder: (context, state) {
@@ -120,6 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           user.address,
                           user.area,
                         ),
+
                         Gap(10.h),
 
                         AppText(
@@ -156,12 +158,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Gap(30.h),
 
                         // الاشتراك
-                        user.subscriptionEndDate == null
-                            ? SizedBox()
-                            : _subscriptionWidget(
+                        // user.subscriptionEndDate == null
+                        //     ? SizedBox()
+                        _subscriptionWidget(context,
+                            user.subscriptionEndDate ?? 'No subscription date'),
+                        Gap(15.h),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
                                 context,
-                                user.subscriptionEndDate ??
-                                    'No subscription date'),
+                                MaterialPageRoute(
+                                  builder: (context) => HelpScreen(),
+                                ));
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20.w),
+                            width: 351.w,
+                            height: 45.h,
+                            decoration: BoxDecoration(
+                                color: Color(0xffEFEAD8),
+                                borderRadius: BorderRadius.circular(11)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(
+                                  Icons.arrow_back_ios,
+                                  size: 18,
+                                ),
+                                AppText(
+                                  text: 'الدعم و المساعده ',
+                                  fontsize: 15,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
 
                         Gap(25.h),
 
@@ -182,7 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   : Center(child: CircularProgressIndicator());
             }
 
-            return const Center(child: Text("لا يوجد بيانات"));
+            return const Center(child: AppText(text: 'فشل الاتصال بالانترنت'));
           },
         ),
       ),
@@ -255,7 +286,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       TextSpan(
                         text: ' مشترك حتى ',
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 13.sp,
                           fontFamily: 'Tajawal',
                           fontWeight: FontWeight.w500,
                           color: AppColors.black,
@@ -264,7 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       TextSpan(
                         text: date.split('T').first,
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 13.sp,
                           fontFamily: 'Tajawal',
                           fontWeight: FontWeight.w500,
                           color: AppColors.primary,
@@ -278,7 +309,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onTap: () => context.pushNamed(Routes.paymentScreen),
                   child: AppText(
                     text: 'اعرف المزيد عن الأشتراك',
-                    fontsize: 10.sp,
+                    fontsize: 8.sp,
                     fontWeight: FontWeight.w800,
                     color: AppColors.primary,
                   ),

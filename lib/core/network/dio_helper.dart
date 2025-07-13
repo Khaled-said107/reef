@@ -11,8 +11,8 @@ class DioHelper {
       BaseOptions(
         baseUrl: 'http://82.29.172.199:8001/api/v1/',
         receiveDataWhenStatusError: true,
-        connectTimeout: Duration(seconds: 30),
-        receiveTimeout: Duration(seconds: 30),
+        connectTimeout: Duration(seconds: 60),
+        receiveTimeout: Duration(seconds: 60),
         headers: {'Content-Type': 'application/json'},
       ),
     );
@@ -48,15 +48,26 @@ class DioHelper {
     Map<String, dynamic>? query,
     String? token,
   }) async {
-    dio.options.headers = {
+    final headers = {
       'Content-Type': 'application/json',
-      'Authorization': token != null ? 'Bearer $token' : '',
+      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
     };
 
-    return await dio.get(
-      url,
-      queryParameters: query,
-    );
+    final fullUrl = '${dio.options.baseUrl}$url';
+    print('🔗 Requesting: $fullUrl');
+    print('📦 Query: $query');
+    print('🔑 Headers: $headers');
+
+    try {
+      return await dio.get(
+        url,
+        queryParameters: query,
+        options: Options(headers: headers),
+      );
+    } catch (e) {
+      print("❌ Dio Get Error: $e");
+      rethrow;
+    }
   }
 
   // static Future<Response> patchData({

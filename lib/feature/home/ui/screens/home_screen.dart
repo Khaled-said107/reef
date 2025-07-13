@@ -42,70 +42,116 @@ class _HomeScreenState extends State<HomeScreen> {
     final shown = prefs.getBool('ShowOnce') ?? false;
 
     if (!shown) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  context.pop();
-                },
-                child: AppText(
-                  text: 'x',
-                  fontsize: 28.sp,
-                  fontWeight: FontWeight.w500,
+      final role = CacheHelper.getData('role');
+
+      if (role == 'user') {
+        await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Row(
+              children: [
+                InkWell(
+                  onTap: () => context.pop(),
+                  child: AppText(
+                    text: 'x',
+                    fontsize: 28.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              Spacer(),
-              Image.asset(
-                'assets/images/logo.png',
-                width: 50.w,
-                height: 50.h,
+                const Spacer(),
+                Image.asset(
+                  'assets/images/logo.png',
+                  width: 50.w,
+                  height: 50.h,
+                ),
+              ],
+            ),
+            content: AppText(
+              fontsize: 12.sp,
+              fontWeight: FontWeight.w500,
+              textAlign: TextAlign.center,
+              maxLines: 5,
+              text:
+                  'تهانينا! بصفتك من أول ٢٥٠ عميل على تطبيق ريف، عندك فرصة تحصل على ٣ شهور اشتراك مجانًا! كل اللي عليك تنشر إعلان وترفع صورتين بس، الحق مكانك!',
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            backgroundColor: const Color(0xFFF0F4ED),
+            actions: [
+              Center(
+                child: InkWell(
+                  onTap: () {
+                    context.pop();
+                    context.pushNamed(Routes.createPost);
+                  },
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+                    decoration: BoxDecoration(
+                      color: const Color(0xff6A994E),
+                      borderRadius: BorderRadius.circular(5.r),
+                    ),
+                    child: AppText(
+                      text: 'انشر إعلانك الآن',
+                      color: Colors.white,
+                      fontsize: 12.sp,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
-          content: AppText(
-            fontsize: 12.sp,
-            fontWeight: FontWeight.w500,
-            textAlign: TextAlign.center,
-            maxLines: 5,
-            text:
-                'تهانينا! بصفتك من أول ٢٥٠ عميل على تطبيق ريف، عندك فرصة تحصل على ٣ شهور اشتراك مجانًا! كل اللي عليك تنشر إعلان وترفع صورتين بس، الحق مكانك!',
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.r),
-          ),
-          backgroundColor: const Color(0xFFF0F4ED),
-          actions: [
-            Center(
-              child: InkWell(
-                onTap: () {
-                  context.pop();
-                  context.pushNamed(
-                      role == 'user' ? Routes.createPost : Routes.addCar);
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                    vertical: 12.h,
+        );
+      } else if (role == 'driver') {
+        await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: const Color(0xFFF0F4ED),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.directions_car, size: 60, color: Colors.grey),
+                SizedBox(height: 10.h),
+                AppText(
+                  text: "🚗 لسه ما ضفتش عربية",
+                  fontsize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+                SizedBox(height: 10.h),
+                AppText(
+                  text: "ضيف عربية عشان تبدأ شغلك 💪",
+                  fontsize: 12.sp,
+                  color: Colors.grey,
+                ),
+                SizedBox(height: 20.h),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
                   ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xff6A994E),
-                    borderRadius: BorderRadius.circular(5.r),
-                  ),
+                  onPressed: () {
+                    context.pop();
+                    context.pushNamed(Routes.addCar);
+                  },
                   child: AppText(
-                    text: 'انشر إعلانك الآن',
+                    text: "ضيف عربية",
                     color: Colors.white,
                     fontsize: 12.sp,
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      );
+          ),
+        );
+      }
 
+      // Mark it as shown
       await prefs.setBool('ShowOnce', true);
     }
   }
@@ -185,7 +231,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: GestureDetector(
                                 onTap: () {
                                   context
-                                      .pushNamed(Routes.engAddPost)
+                                      .pushNamed(role == 'engineer'
+                                          ? Routes.engAddPost
+                                          : Routes.askEngineerScreen)
                                       .then((_) {
                                     setState(() {
                                       _searchController.clear();
@@ -357,8 +405,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     isSearching = false;
                   });
                   final cubit = CategoryCubit.get(context);
-                  cubit.getCategories();
-                  cubit.fetchCategoriesWithPosts();
+                  if (cubit.categories.isEmpty) cubit.getCategories();
+                  if (cubit.categoriesWithPosts.isEmpty)
+                    cubit.fetchCategoriesWithPosts();
                 },
               ),
             ],

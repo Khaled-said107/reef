@@ -41,19 +41,34 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
             body: Column(
               children: [
                 _header(context),
-                state is SinglePostSuccess
-                    ? Expanded(
-                        child: ListView.separated(
-                          padding: EdgeInsets.all(16.w),
-                          itemBuilder: (context, index) =>
-                              _subCategoryCard(context, posts[index]),
-                          separatorBuilder: (context, index) => Gap(10.h),
-                          itemCount: posts!.length,
+                posts!.isEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Container(
+                            height: 100.h,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: AppText(
+                              text:
+                                  'لم يعرض أحد منتجات للبيع في هذا الصنف حتى الآن',
+                            ),
+                          ),
                         ),
                       )
-                    : Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                    : state is SinglePostSuccess
+                        ? Expanded(
+                            child: ListView.separated(
+                              padding: EdgeInsets.all(16.w),
+                              itemBuilder: (context, index) =>
+                                  _subCategoryCard(context, posts[index]),
+                              separatorBuilder: (context, index) => Gap(10.h),
+                              itemCount: posts!.length,
+                            ),
+                          )
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          ),
               ],
             ),
           ),

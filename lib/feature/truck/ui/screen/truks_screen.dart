@@ -31,13 +31,14 @@ class _TrucksScreenState extends State<TrucksScreen> {
   @override
   void initState() {
     super.initState();
+    DriverCubit.get(context).featchDrivers();
     _initData(); // نادى على ميثود تانية
   }
 
   void _initData() async {
     final cubit = DriverCubit.get(context);
     await cubit.fetchDeliveryData(); // استنى لحد ما تخلص
-    cubit.featchDrivers(); // بعدين نفذ دي
+    cubit.featchDrivers();
   }
 
   @override
@@ -45,17 +46,14 @@ class _TrucksScreenState extends State<TrucksScreen> {
     return Scaffold(
       body: SafeArea(
         child: BlocConsumer<DriverCubit, DriverState>(
-          listener: (context, state) {
-            if (state is DriverError) {}
-          },
+          listener: (context, state) {},
           builder: (context, state) {
             // var cubit = DriverCubit.get(context).driverModel;
             // var drivers = cubit!.drivers;
 
             //  final drivers = cubit.;
-            if (state is DriverLoading) {
-              return Center(child: CircularProgressIndicator());
-            } else if (state is DriverError) {
+            if (state is DriverError) {
+              print(state.message);
               return Center(
                   child: AppText(
                 text: state.message == 'Post is not accepted'
@@ -63,8 +61,10 @@ class _TrucksScreenState extends State<TrucksScreen> {
                     : state.message ==
                             'Your subscription has expired. Please renew to continue.'
                         ? 'يجب الاشتراك في التطبيق من صفحة الملف الشخصي'
-                        : 'حدث خط ${state.message}',
+                        : state.message,
               ));
+            } else if (state is DriverLoading) {
+              return Center(child: CircularProgressIndicator());
             } else if (state is DriverSuccess) {
               var drivers = state.drivers?.drivers ?? [];
               return SingleChildScrollView(
@@ -75,7 +75,9 @@ class _TrucksScreenState extends State<TrucksScreen> {
                   ),
                   child: Column(
                     children: [
-                      header(name: 'عربيات النقل', icon: Icons.navigate_next),
+                      header(
+                        name: 'عربيات النقل',
+                      ),
                       Gap(10.h),
                       _search_bar(context),
                       Gap(10.h),

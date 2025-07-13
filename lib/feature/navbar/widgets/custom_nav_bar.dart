@@ -44,24 +44,25 @@ class CustomNavBar extends StatelessWidget {
               label: "الملف الشخصي",
             ),
             BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(bottom: 5.h),
-                child: SvgPicture.asset('assets/images/myPosts.svg'),
-              ),
-              activeIcon: Padding(
-                padding: EdgeInsets.only(bottom: 5.h),
-                child: SvgPicture.asset('assets/images/myPostsActive.svg'),
-              ),
-              label: "إعلاناتي",
-            ),
+                icon: Padding(
+                  padding: EdgeInsets.only(bottom: 5.h),
+                  child: SvgPicture.asset('assets/images/myPosts.svg'),
+                ),
+                activeIcon: Padding(
+                  padding: EdgeInsets.only(bottom: 5.h),
+                  child: SvgPicture.asset('assets/images/myPostsActive.svg'),
+                ),
+                label: role == 'driver' ? "سيارتي" : "اعلاناتي"),
+
             // Placeholder (هيفضل فاضي)
             BottomNavigationBarItem(
-              icon: Padding(
-                padding: EdgeInsets.only(bottom: 18.h),
-                child: SizedBox.shrink(),
+              icon: SizedBox(
+                height: 15.h, // نفس ارتفاع الدائرة
+                child: SizedBox(height: 12.h),
               ),
-              label: "إضافة إعلان",
+              label: '',
             ),
+
             BottomNavigationBarItem(
                 icon: Padding(
                   padding: EdgeInsets.only(bottom: 5.h),
@@ -72,6 +73,7 @@ class CustomNavBar extends StatelessWidget {
                   child: SvgPicture.asset('assets/images/categoriesActive.svg'),
                 ),
                 label: role == 'driver' ? "السيارات" : "الأقسام"),
+            //     label: role == 'driver' ? "السيارات" : "الأقسام"
             BottomNavigationBarItem(
               icon: Padding(
                 padding: EdgeInsets.only(bottom: 5.h),
@@ -88,16 +90,29 @@ class CustomNavBar extends StatelessWidget {
 
         // الزرار اللي في النص
         Positioned(
-          bottom: 29, // المسافة من تحت
+          bottom: 18.h,
           child: GestureDetector(
-            onTap: () => onTap(2), // عشان لما تدوس عليه يروح للتاب التالت
-            child: CircleAvatar(
-              backgroundColor: AppColors.primary,
-              radius: 30.r,
-              child: SvgPicture.asset(
-                'assets/images/add.svg',
-                height: 24.h,
-                width: 24.w,
+            onTap: () => onTap(2),
+            child: Container(
+              width: 60.w,
+              height: 60.w,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/add.svg',
+                  height: 24.h,
+                  width: 24.w,
+                ),
               ),
             ),
           ),

@@ -43,7 +43,7 @@ class _AskEngineerScreenState extends State<AskEngineerScreen> {
       },
       builder: (context, state) {
         var users = ASkEngineerCubit.get(context).getEngineerModel?.users;
-        var engineer = users?[0];
+        var engineer = (users != null && users.isNotEmpty) ? users[0] : null;
         var allAds = ASkEngineerCubit.get(context).getAllAdsModel?.ads;
         return Scaffold(
           body: SafeArea(

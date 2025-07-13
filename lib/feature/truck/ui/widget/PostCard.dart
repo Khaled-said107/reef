@@ -43,6 +43,15 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget _itemImage() {
+    String imageUrl = widget.drivers.vehicleImages.isNotEmpty
+        ? widget.drivers.vehicleImages.first
+        : '';
+
+    // تحقق هل الرابط يبدأ بـ http أو https
+    if (imageUrl.isNotEmpty &&
+        !(imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
+      imageUrl = 'http://82.29.172.199:8001$imageUrl';
+    }
     return ClipRRect(
       borderRadius: BorderRadius.only(
         topRight: Radius.circular(10.r),
@@ -50,7 +59,7 @@ class _PostCardState extends State<PostCard> {
       ),
       child: Image.network(
         widget.drivers.vehicleImages.isNotEmpty == true
-            ? 'http://82.29.172.199:8001${widget.drivers.vehicleImages.first}'
+            ? imageUrl
             : 'https://via.placeholder.com/123x127',
         height: 127.h,
         width: 123.w,
@@ -88,7 +97,7 @@ class _PostCardState extends State<PostCard> {
                 // عنوان
                 AppText(
                   text:
-                      'العنوان: ${widget.drivers.user.address ?? '-'} - ${widget.drivers.user.area ?? '-'}',
+                      'العنوان: ${widget.drivers.user?.address ?? '-'} - ${widget.drivers.user?.area ?? '-'}',
                   fontsize: 6.sp,
                   fontWeight: FontWeight.w700,
                   color: const Color(0xff6A994E),
@@ -112,7 +121,7 @@ class _PostCardState extends State<PostCard> {
                 Row(
                   children: [
                     AppText(
-                      text: widget.drivers.user.name ?? '',
+                      text: widget.drivers.user?.name ?? 'لا يوجد اسم',
                       fontsize: 7.sp,
                       color: const Color(0xff7c7c7c),
                     ),

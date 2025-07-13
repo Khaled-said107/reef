@@ -7,6 +7,7 @@ import 'package:reef/core/helpers/extensions.dart';
 import 'package:reef/core/routing/routes.dart';
 import 'package:reef/core/widgets/app_text.dart';
 import 'package:reef/core/widgets/custom_button.dart';
+import 'package:reef/feature/askEngineer/ui/widgets/show_toast.dart';
 import 'package:reef/feature/auth/logic/auth_cubit/auth_cubit.dart';
 import 'package:reef/feature/auth/logic/auth_cubit/auth_state.dart';
 import 'package:reef/feature/auth/ui/widgets/text_field_widget.dart';
@@ -66,34 +67,18 @@ class _RegisterFieldsState extends State<RegisterFields> {
           print(role);
           print("تم استلام التوكن: ${state.model.data.token}");
 
-          if (role == 'user') {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => NavbarWidget(role: role)),
-            );
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text('تم إنشاء الحساب بنجاح')));
-          } else {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NavbarWidget(role: role),
-              ),
-              (route) => false,
-            );
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(
-                content:
-                    Text('تم إنشاء الحساب بنجاح , سيتم التواصل معك قريبا')));
-          }
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NavbarWidget(role: role),
+            ),
+            (route) => false,
+          );
+          showToast(message: 'تم إنشاء الحساب بنجاح ', color: Colors.green);
 
           CacheHelper.saveData(key: 'role', value: role);
         } else if (state is AuthError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.error)));
+          showToast(message: state.error, color: Colors.red);
         }
       },
       builder: (context, state) {

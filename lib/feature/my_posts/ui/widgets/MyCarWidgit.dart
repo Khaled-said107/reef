@@ -3,19 +3,17 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:reef/core/constants/app_colors.dart';
-import 'package:reef/core/helpers/extensions.dart';
-import 'package:reef/core/routing/routes.dart';
-import 'package:reef/core/widgets/Img_In_Detalse.dart';
 import 'package:reef/core/widgets/app_text.dart';
-import 'package:reef/core/widgets/header.dart';
+import 'package:reef/feature/my_posts/data/Model/MyCar_Modle.dart';
+import 'package:reef/feature/my_posts/ui/screens/UpdateMyCarPage.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/widgets/Img_In_Detalse.dart';
+import '../../../../core/widgets/headar.dart';
 
-import '../../data/DriversResponseModel.dart';
+class MyCarWidget extends StatelessWidget {
+  final MyCarModel MycarModl;
+  const MyCarWidget({super.key, required this.MycarModl});
 
-class TruckDetailsScreen extends StatelessWidget {
-  const TruckDetailsScreen({super.key, required this.driver});
-
-  final DriverModel driver;
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: SafeArea(child: _buildContent(context)));
@@ -26,18 +24,17 @@ class TruckDetailsScreen extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 5.h),
       child: ListView(
         children: [
-          header(name: 'تفاصيل العربية', icon: Icons.navigate_next),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.w),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // InkWell(
-                //   onTap: () {
-                //     showPostOptionsBottomSheet(context);
-                //   },
-                //   child: Icon(Icons.more_vert, size: 18.sp),
-                // ),
+                InkWell(
+                  onTap: () {
+                    showPostOptionsBottomSheet(context, MycarModl);
+                  },
+                  child: Icon(Icons.more_vert, size: 18.sp),
+                ),
                 Row(
                   children: [
                     RatingBarIndicator(
@@ -50,7 +47,7 @@ class TruckDetailsScreen extends StatelessWidget {
                     ),
                     Gap(10.w),
                     AppText(
-                      text: driver.user?.name ?? '',
+                      text: MycarModl.userName.toString(),
                       fontWeight: FontWeight.w500,
                       fontsize: 16.sp,
                     ),
@@ -58,8 +55,8 @@ class TruckDetailsScreen extends StatelessWidget {
                     CircleAvatar(
                         backgroundColor: AppColors.bgColor,
                         radius: 22.r,
-                        backgroundImage:
-                            AssetImage('assets/images/profile_default.png')),
+                        backgroundImage: NetworkImage(
+                            'http://82.29.172.199:8001${MycarModl.userPhoto}'))
                   ],
                 ),
               ],
@@ -74,21 +71,21 @@ class TruckDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 AppText(
-                  text: driver.title,
+                  text: MycarModl.title.toString(),
                   color: Color(0xff3A3A3A),
                   fontWeight: FontWeight.w700,
                   fontsize: 16.sp,
                 ),
                 Gap(10.h),
-                _desc(driver),
+                _desc(MycarModl),
                 Gap(20.h),
                 _availableQuantity(),
                 Gap(15.w),
-                _dateAndAddress(driver),
+                _dateAndAddress(MycarModl),
                 Gap(10.w),
-                _theTable(driver),
+                _theTable(MycarModl),
                 Gap(20.w),
-                _buttons(context, driver.user?.phone ?? ''),
+                _buttons(context, MycarModl.userPhoto.toString()),
               ],
             ),
           ),
@@ -112,21 +109,21 @@ class TruckDetailsScreen extends StatelessWidget {
       height: 240.h,
       width: double.infinity,
       child: PageView.builder(
-        itemCount: driver.vehicleImages?.length,
+        itemCount: MycarModl.vehicleImages?.length,
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => ImgInDetalse(
-                    imgs: driver.vehicleImages
+                    imgs: MycarModl.vehicleImages!
                         .map((e) => 'http://82.29.172.199:8001$e')
                         .toList(),
                     imgIndex: index),
               ));
             },
             child: Image.network(
-              driver.vehicleImages.isNotEmpty
-                  ? 'http://82.29.172.199:8001${driver.vehicleImages[index]}'
+              MycarModl.vehicleImages!.isNotEmpty
+                  ? 'http://82.29.172.199:8001${MycarModl.vehicleImages?[index]}'
                   : 'assets/images/default_product_image.png',
               height: 240.h,
               width: double.infinity,
@@ -235,7 +232,7 @@ void _launchURL(String url) async {
   }
 }
 
-void showPostOptionsBottomSheet(BuildContext context) {
+void showPostOptionsBottomSheet(BuildContext context, MyCarModel mycarModel) {
   showModalBottomSheet(
     context: context,
     shape: RoundedRectangleBorder(
@@ -257,12 +254,14 @@ void showPostOptionsBottomSheet(BuildContext context) {
           ),
           const SizedBox(height: 20),
           _buildOptionItem('edit', "تعديل", () {
-            Navigator.pop(context);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpdateMyCarScreen(
+                    myCarmodel: mycarModel,
+                  ),
+                ));
             // TODO: Navigate to edit screen
-          }),
-          _buildOptionItem("delete", "حذف", () {
-            Navigator.pop(context);
-            // TODO: Confirm and delete
           }),
           const SizedBox(height: 10),
         ],
@@ -284,7 +283,7 @@ Widget _buildOptionItem(String icon, String title, VoidCallback onTap) {
   );
 }
 
-Directionality _theTable(DriverModel driver) {
+Directionality _theTable(MyCarModel car) {
   return Directionality(
     textDirection: TextDirection.rtl,
     child: Container(
@@ -301,27 +300,27 @@ Directionality _theTable(DriverModel driver) {
         ),
         columnWidths: const {0: FlexColumnWidth(1), 1: FlexColumnWidth(1)},
         children: [
-          _buildTableRow("نوع الحمولة", driver.cargoType ?? '-'),
-          _buildTableRow("آخر صيانة", driver.lastMaintenance ?? '-'),
-          _buildTableRow("التوصيل", driver.deliveryType ?? '-'),
-          _buildTableRow("نوع العربية", driver.vehicleType ?? '-'),
+          _buildTableRow("نوع الحمولة", car.cargoType ?? '-'),
+          _buildTableRow("آخر صيانة", car.lastMaintenance ?? '-'),
+          _buildTableRow("التوصيل", car.deliveryType ?? '-'),
+          _buildTableRow("نوع العربية", car.vehicleType ?? '-'),
         ],
       ),
     ),
   );
 }
 
-Row _dateAndAddress(DriverModel driver) {
+Row _dateAndAddress(MyCarModel car) {
   return Row(
     children: [
       AppText(
-        text: 'تاريخ النشر:  ${driver.createdAt.split('T').first}',
+        text: 'تاريخ النشر:  ${car.time?.split('T').first}',
         color: Color(0xff7C7C7C),
         fontsize: 8.sp,
       ),
       Spacer(),
       AppText(
-        text: 'العنوان: ${driver.user?.address}',
+        text: 'العنوان: ${car.UserAdrres}',
         color: AppColors.primary,
         fontsize: 12.sp,
       ),
@@ -344,10 +343,10 @@ Container _availableQuantity() {
   );
 }
 
-AppText _desc(DriverModel driver) {
+AppText _desc(MyCarModel car) {
   return AppText(
     textAlign: TextAlign.right,
-    text: driver.description,
+    text: car.description.toString(),
     color: Color(0xff7C7C7C),
     fontWeight: FontWeight.w500,
     fontsize: 11.sp,

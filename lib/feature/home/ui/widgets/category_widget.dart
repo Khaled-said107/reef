@@ -53,7 +53,7 @@ class _CategoyWidgetState extends State<CategoyWidget> {
                           child: SizedBox(
                             width: totalWidth,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children:
                                   List.generate(categories.length, (index) {
                                 return _buildCategoryItem(categories[index]);
@@ -63,15 +63,17 @@ class _CategoyWidgetState extends State<CategoyWidget> {
                         );
                       },
                     )
-                  : ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: categories.length,
-                      itemBuilder: (context, index) {
-                        return _buildCategoryItem(categories[index]);
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return Gap(25.w);
-                      },
+                  : Center(
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: categories.length,
+                        itemBuilder: (context, index) {
+                          return _buildCategoryItem(categories[index]);
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Gap(25.w);
+                        },
+                      ),
                     ),
             );
           }
@@ -89,42 +91,47 @@ class _CategoyWidgetState extends State<CategoyWidget> {
   }
 
   Widget _buildCategoryItem(CategoryModel category) {
-    return GestureDetector(
-      onTap: () {
-        context.pushNamed(Routes.categories);
-      },
-      child: Stack(
-        children: [
-          Container(
-            margin: EdgeInsets.only(top: 45.w),
-            padding: EdgeInsets.only(top: 35.h),
-            decoration: BoxDecoration(
-              color: Color(0xFFEFEAD8),
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-            height: 75.h,
-            width: 60.w,
-            child: Center(
-              child: AppText(
-                textAlign: TextAlign.center,
-                text: category.name,
-                color: AppColors.black,
-                fontWeight: FontWeight.w500,
-                fontsize: 12.sp,
+    return Row(
+      children: [
+        Gap(15.w),
+        GestureDetector(
+          onTap: () {
+            context.pushNamed(Routes.categories);
+          },
+          child: Stack(
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 45.w),
+                padding: EdgeInsets.only(top: 35.h),
+                decoration: BoxDecoration(
+                  color: Color(0xFFEFEAD8),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                height: 75.h,
+                width: 60.w,
+                child: Center(
+                  child: AppText(
+                    textAlign: TextAlign.center,
+                    text: category.name,
+                    color: AppColors.black,
+                    fontWeight: FontWeight.w500,
+                    fontsize: 12.sp,
+                  ),
+                ),
               ),
-            ),
-          ),
-          Positioned(
-            top: 10.h,
-            child: CircleAvatar(
-              radius: 30.r,
-              backgroundImage: NetworkImage(
-                'http://82.29.172.199:8001${category.image}',
+              Positioned(
+                top: 10.h,
+                child: CircleAvatar(
+                  radius: 30.r,
+                  backgroundImage: NetworkImage(
+                    'http://82.29.172.199:8001${category.image}',
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
