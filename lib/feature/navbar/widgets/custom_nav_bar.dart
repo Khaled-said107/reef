@@ -22,7 +22,9 @@ class CustomNavBar extends StatelessWidget {
         // Bottom Navigation Bar
         BottomNavigationBar(
           backgroundColor: const Color(0xFFEFEAD8),
-          selectedLabelStyle: const TextStyle(fontFamily: 'Tajawal'),
+          selectedLabelStyle: const TextStyle(
+            fontFamily: 'Tajawal',
+          ),
           unselectedLabelStyle: const TextStyle(fontFamily: 'Tajawal'),
           currentIndex: currentIndex,
           onTap: onTap,
