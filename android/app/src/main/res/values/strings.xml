@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ريف مصر</string>
+    
+    <!-- أضف دول -->
+    <string name="facebook_app_id">1478341323592731</string>
+    <string name="facebook_client_token">645d4ad2b4683cab3d069ff986a99780</string>
+</resources>

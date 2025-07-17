@@ -94,42 +94,37 @@ class _CategoyWidgetState extends State<CategoyWidget> {
     return Row(
       children: [
         Gap(15.w),
-        GestureDetector(
-          onTap: () {
-            context.pushNamed(Routes.categories);
-          },
-          child: Stack(
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 45.w),
-                padding: EdgeInsets.only(top: 35.h),
-                decoration: BoxDecoration(
-                  color: Color(0xFFEFEAD8),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                height: 75.h,
-                width: 60.w,
-                child: Center(
-                  child: AppText(
-                    textAlign: TextAlign.center,
-                    text: category.name,
-                    color: AppColors.black,
-                    fontWeight: FontWeight.w500,
-                    fontsize: 12.sp,
-                  ),
+        Stack(
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 45.w),
+              padding: EdgeInsets.only(top: 35.h),
+              decoration: BoxDecoration(
+                color: Color(0xFFEFEAD8),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              height: 75.h,
+              width: 60.w,
+              child: Center(
+                child: AppText(
+                  textAlign: TextAlign.center,
+                  text: category.name,
+                  color: AppColors.black,
+                  fontWeight: FontWeight.w500,
+                  fontsize: 12.sp,
                 ),
               ),
-              Positioned(
-                top: 10.h,
-                child: CircleAvatar(
-                  radius: 30.r,
-                  backgroundImage: NetworkImage(
-                    'http://82.29.172.199:8001${category.image}',
-                  ),
+            ),
+            Positioned(
+              top: 10.h,
+              child: CircleAvatar(
+                radius: 30.r,
+                backgroundImage: NetworkImage(
+                  'http://82.29.172.199:8001${category.image}',
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );

@@ -152,6 +152,7 @@ class CategoryPostScreen extends StatelessWidget {
                       text: post.name!,
                       fontsize: 13.sp,
                       fontWeight: FontWeight.w500,
+                      maxWords: 3,
                     ),
                     AppText(
                       text: '${post.price} جنيه',
@@ -170,6 +171,7 @@ class CategoryPostScreen extends StatelessWidget {
                   fontsize: 8.sp,
                   fontWeight: FontWeight.w500,
                   color: const Color(0xff7c7c7c),
+                  maxLines: 1,
                 ),
                 Gap(20.h),
 
@@ -199,6 +201,7 @@ class CategoryPostScreen extends StatelessWidget {
                   text: '${post.userName}',
                   fontsize: 8.sp,
                   color: const Color(0xff7c7c7c),
+                  maxWords: 3,
                 ),
 
                 const Spacer(),

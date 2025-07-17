@@ -103,7 +103,7 @@ class _SendPaymentImgScreenState extends State<SendPaymentImgScreen> {
 
   Center _phoneNumber() => Center(
         child: AppText(
-          text: '0105695433',
+          text: '01091944770',
           fontsize: 24.sp,
           fontWeight: FontWeight.w700,
           color: AppColors.primary,

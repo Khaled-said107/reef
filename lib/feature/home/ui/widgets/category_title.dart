@@ -5,9 +5,11 @@ import 'package:reef/core/constants/app_colors.dart';
 import 'package:reef/core/widgets/app_text.dart';
 
 class CategoryTitle extends StatelessWidget {
-  const CategoryTitle({super.key, required this.text, this.ontap});
+  const CategoryTitle({super.key, required this.text, this.ontap, this.more});
   final String text;
   final Function()? ontap;
+  final String? more;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -17,12 +19,11 @@ class CategoryTitle extends StatelessWidget {
           InkWell(
             onTap: ontap,
             child: AppText(
-              text: 'المزيد',
+              text: more ?? 'المزيد',
               color: AppColors.primary,
               fontWeight: FontWeight.w700,
             ),
           ),
-
           Spacer(),
           AppText(
             text: text,

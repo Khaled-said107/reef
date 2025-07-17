@@ -156,34 +156,29 @@ class _AskEngineerScreenState extends State<AskEngineerScreen> {
                   ],
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ImageViewerScreen(
-                        imageUrl: ad.images[0].isNotEmpty
-                            ? 'http://82.29.172.199:8001${ad.images[0]}'
-                            : '', // هنفحصه في الشاشة نفسها
+              if (ad.images.isNotEmpty && ad.images[0].isNotEmpty)
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ImageViewerScreen(
+                          imageUrl: 'http://82.29.172.199:8001${ad.images[0]}',
+                        ),
                       ),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 150.h,
+                    );
+                  },
                   child: Image.network(
-                    ad.images[0].isNotEmpty
-                        ? 'http://82.29.172.199:8001${ad.images[0]}'
-                        : 'http://82.29.172.199:8001/assets/images/default_product_image.png',
-                    height: 127.h,
-                    width: 123.w,
+                    'http://82.29.172.199:8001${ad.images[0]}',
+                    width: double.infinity,
+                    height: 150.h,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) =>
                         Image.asset('assets/images/default_product_image.png'),
                   ),
-                ),
-              ),
+                )
+              else
+                SizedBox.shrink(),
               Padding(
                 padding: EdgeInsets.only(
                   right: 10.w,

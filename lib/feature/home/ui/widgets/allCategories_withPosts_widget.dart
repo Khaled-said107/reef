@@ -66,7 +66,7 @@ class _AllCategoriesWithPostsWidgetState
                             ),
                           )
                         : SizedBox(
-                            height: 191,
+                            height: 170.h,
                             width: double.infinity,
                             child: Directionality(
                               textDirection: TextDirection.rtl,
@@ -79,6 +79,8 @@ class _AllCategoriesWithPostsWidgetState
                                       SizedBox(width: 10.w),
                                   itemBuilder: (context, index) {
                                     final post = category.posts[index];
+                                    final userName =
+                                        post.user.name ?? 'مستخدم غير معروف';
                                     print(
                                       '✅ POST RAW JSON: ${category.posts[index]}',
                                     );
@@ -90,7 +92,7 @@ class _AllCategoriesWithPostsWidgetState
                                           ? '${post.price} EGP'
                                           : '',
                                       title: post.name ?? '',
-                                      name: post.name ?? '',
+                                      name: userName ?? '',
                                       date: post.createdAt?.split('T').first ??
                                           '',
                                       address: post.address ?? '',

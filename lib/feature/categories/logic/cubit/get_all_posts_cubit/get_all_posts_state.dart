@@ -1,9 +1,10 @@
-
 import '../../../data/get_all_posts_model.dart';
 
 sealed class GetAllPostsState {}
 
 final class GetAllPostsInitial extends GetAllPostsState {}
+
+class GetAllPostsLoading extends GetAllPostsState {}
 
 class SinglePostLoading extends GetAllPostsState {}
 

@@ -1,3 +1,5 @@
+import 'package:reef/feature/askEngineer/data/get_enginner_model.dart';
+
 class PostModel {
   final String? id;
   final String? name;
@@ -26,8 +28,10 @@ class PostModel {
   final bool? likedByCurrentUser;
   final int? likesCount;
   final int? commentsCount;
+  final UserModel user;
 
-  PostModel({
+  PostModel(
+    this.user, {
     this.id,
     this.name,
     this.description,
@@ -61,6 +65,7 @@ class PostModel {
     final data = json.containsKey('data') ? json['data']['post'] : json;
 
     return PostModel(
+      UserModel.fromJson(data['user'] ?? {}),
       id: data['_id'],
       name: data['name'],
       description: data['description'],

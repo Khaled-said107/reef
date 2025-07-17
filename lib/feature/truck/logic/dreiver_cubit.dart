@@ -36,7 +36,10 @@ class DriverCubit extends Cubit<DriverState> {
         token: token,
         query: filters,
       );
-
+      if (response.statusCode == 403) {
+        // ❌ اليوزر مش متفعل، متعملش emit خالص
+        return;
+      }
       final data = response.data;
       print("✅ Full API response: $data");
 
@@ -136,7 +139,10 @@ class DriverCubit extends Cubit<DriverState> {
         url: 'driver/filter-option', // عدل URL هنا
         token: token,
       );
-
+      if (response.statusCode == 403) {
+        // ❌ اليوزر مش متفعل، متعملش emit خالص
+        return;
+      }
       deliveryData = DeliveryData.fromJson(response.data['data']);
       emit(DeliverySuccess(deliveryData!));
     } catch (e) {

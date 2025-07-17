@@ -33,6 +33,8 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders.put("facebookAppId", "1478341323592731")
+        manifestPlaceholders.put("facebookClientToken", "645d4ad2b4683cab3d069ff986a99780")
     }
 
     signingConfigs {
@@ -55,4 +57,8 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation("com.facebook.android:facebook-android-sdk:16.3.0")
 }

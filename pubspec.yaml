@@ -1,7 +1,7 @@
 name: reef
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.0.3+3
+version: 1.0.6+6
 #i change the sdk from sdk: ^3.7.2 to   sdk: ">=3.5.0 <4.0.0" to work on my flutter version ok!!
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  flutter_facebook_auth: ^7.1.2
   flutter_launcher_icons: ^0.14.4
   flutter_rating_bar: ^4.0.1
   flutter_screenutil: ^5.9.3

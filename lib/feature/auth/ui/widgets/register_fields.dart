@@ -219,25 +219,25 @@ class _RegisterFieldsState extends State<RegisterFields> {
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      AppText(text: 'مهندس زراعي'),
-                      Checkbox(
-                        value: isEngineer,
-                        onChanged: (value) {
-                          setState(() {
-                            isEngineer = value!;
-                            if (isEngineer) {
-                              isUser = false;
-                              isDriver = false;
-                            }
-                            ;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     AppText(text: 'مهندس زراعي'),
+                  //     Checkbox(
+                  //       value: isEngineer,
+                  //       onChanged: (value) {
+                  //         setState(() {
+                  //           isEngineer = value!;
+                  //           if (isEngineer) {
+                  //             isUser = false;
+                  //             isDriver = false;
+                  //           }
+                  //           ;
+                  //         });
+                  //       },
+                  //     ),
+                  //   ],
+                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

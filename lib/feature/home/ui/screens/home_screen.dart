@@ -8,6 +8,7 @@ import 'package:reef/core/helpers/extensions.dart';
 import 'package:reef/core/routing/routes.dart';
 import 'package:reef/core/widgets/app_text.dart';
 import 'package:reef/feature/categories/logic/cubit/category_cubit.dart';
+import 'package:reef/feature/categories/ui/screens/categories_screen.dart';
 import 'package:reef/feature/home/ui/widgets/allCategories_withPosts_widget.dart';
 import 'package:reef/feature/home/ui/widgets/category_title.dart';
 import 'package:reef/feature/home/ui/widgets/category_widget.dart';
@@ -29,12 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final cubit = CategoryCubit.get(context);
-      cubit.getCategories();
-      cubit.fetchCategoriesWithPosts();
-      _showAlertOnce();
-    });
+    final cubit = CategoryCubit.get(context);
+    cubit.getCategories();
+    cubit.fetchCategoriesWithPosts();
+    _showAlertOnce();
   }
 
   Future<void> _showAlertOnce() async {
@@ -178,8 +177,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 CategoryTitle(
                   text: 'كل ما تحتاجه من ريف',
                   ontap: () {
-                    context.pushNamed(Routes.categories);
+                    // Navigator.of(context).push(MaterialPageRoute(
+                    //   builder: (context) => CategoriesScreen(),
+                    // ));
                   },
+                  more: '',
                 ),
                 CategoyWidget(),
                 Gap(15.h),

@@ -34,6 +34,15 @@ class _ProductScreenState extends State<ProductScreen> {
     context.read<CategoryCubit>().getSinglePost(widget.postId);
   }
 
+  String formatText(String text, int maxWordsPerLine) {
+    final words = text.split(' ');
+    if (words.length <= maxWordsPerLine) return text;
+
+    final firstLine = words.take(maxWordsPerLine).join(' ');
+    final rest = words.skip(maxWordsPerLine).join(' ');
+    return '$firstLine\n$rest';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -352,10 +361,11 @@ class _ProductScreenState extends State<ProductScreen> {
           ],
         ),
         AppText(
-          text: post!.name!,
+          text: formatText(post!.name!, 5), // 5 كلمات في السطر الأول
           color: Color(0xff3A3A3A),
           fontWeight: FontWeight.w700,
           fontsize: 16.sp,
+          textAlign: TextAlign.right,
         ),
       ],
     );
